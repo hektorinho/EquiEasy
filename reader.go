@@ -112,7 +112,6 @@ func GetHorses(page pdf.Page) ([]*Horse, error) {
 		if i == 0 {
 			racehash = fmt.Sprintf("%x", md5.Sum(rowdata))
 		}
-		fmt.Println(string(rowdata))
 
 		if re.Match(rowdata) {
 			dt := string(re.ReplaceAll(rowdata, []byte("$datetrack")))
