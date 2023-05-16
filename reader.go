@@ -15,7 +15,7 @@ import (
 const (
 	REGEX_VALID_RACE_PAGE   = `.*\- [A-Za-z]+ [0-9]+\, [0-9]{4} \- Race [0-9]+`
 	REGEX_VALID_CANCELLED   = `Cancelled.*\-.*`
-	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9AB]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\s\-\&\:\;\'\"\|]+)`
+	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9AB]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\.\s\-\&\:\;\'\"\|]+)`
 	REGEX_LAST_DATE_TRACK   = `(?P<date>[0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]*) (?P<track>[A-Z]{2}[A-Z]*)`
 	REGEX_FRACTIONALS       = `(Pg m Horse Name) (?P<fracs>Start .* Str Fin)`
 	REGEX_TOP_VALUES        = `([0-9\/\s])+|(Head)+[\s]+|(Nose)+[\s]+|(Neck)+[\s]+`
@@ -112,6 +112,7 @@ func GetHorses(page pdf.Page) ([]*Horse, error) {
 		if i == 0 {
 			racehash = fmt.Sprintf("%x", md5.Sum(rowdata))
 		}
+		fmt.Println(string(rowdata))
 
 		if re.Match(rowdata) {
 			dt := string(re.ReplaceAll(rowdata, []byte("$datetrack")))
