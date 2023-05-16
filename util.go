@@ -10,22 +10,33 @@ import (
 // Checks if page contains valid race data or is a continuation from previous race.
 func IsValidRacePage(page pdf.Page) bool {
 	re := regexp.MustCompile(REGEX_VALID_RACE_PAGE)
+	reCancelled := regexp.MustCompile(REGEX_VALID_CANCELLED)
 	rows, err := page.GetTextByRow()
 	if err != nil {
 		return false
 	}
 
-	rowdata := []byte{}
+	firstrowdata := []byte{}
+	secondrowdata := []byte{}
 	for _, row := range rows {
 		if row.Position == 760 {
 			for _, word := range row.Content {
-				rowdata = append(rowdata, word.S...)
-				rowdata = append(rowdata, " "...)
+				firstrowdata = append(firstrowdata, word.S...)
+				firstrowdata = append(firstrowdata, " "...)
 			}
 		}
-		if re.Match(rowdata) {
-			return true
+		if row.Position == 751 {
+			for _, word := range row.Content {
+				secondrowdata = append(secondrowdata, word.S...)
+				secondrowdata = append(secondrowdata, " "...)
+			}
 		}
+	}
+	if reCancelled.Match(secondrowdata) {
+		return false
+	}
+	if re.Match(firstrowdata) {
+		return true
 	}
 	return false
 }

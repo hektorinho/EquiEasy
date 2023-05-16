@@ -14,6 +14,7 @@ import (
 
 const (
 	REGEX_VALID_RACE_PAGE   = `.*\- [A-Za-z]+ [0-9]+\, [0-9]{4} \- Race [0-9]+`
+	REGEX_VALID_CANCELLED   = `Cancelled.*\-.*`
 	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9AB]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\s\-\&\:\;\'\"\|]+)`
 	REGEX_LAST_DATE_TRACK   = `(?P<date>[0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]*) (?P<track>[A-Z]{2}[A-Z]*)`
 	REGEX_FRACTIONALS       = `(Pg m Horse Name) (?P<fracs>Start .* Str Fin)`
@@ -141,6 +142,9 @@ func GetHorses(page pdf.Page) ([]*Horse, error) {
 }
 
 // Returns all valid race pages in an Equibase Document.
+
+// BIG TODO: if race is cancelled it will still have a header but second row will say Cancelled due to Weather!!!
+// SEE BEL102718USA.pdf as and example!!!
 func GetValidPages(f string) ([]pdf.Page, error) {
 	racepages := []pdf.Page{}
 	r, err := pdf.Open(f)
@@ -364,18 +368,22 @@ func NewMetadata(page pdf.Page) (*RaceMetadata, error) {
 	re := regexp.MustCompile(REGEX_RACE_TRACK)
 	renum := regexp.MustCompile(REGEX_RACE_NUMBER)
 	r := &RaceMetadata{}
+	var racehash string
 
 	rows, err := page.GetTextByRow()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, row := range rows {
+	for i, row := range rows {
 		rowdata := []byte{}
 		if row.Position == 760 {
 			for _, word := range row.Content {
 				rowdata = append(rowdata, word.S...)
 				rowdata = append(rowdata, " "...)
+			}
+			if i == 0 {
+				racehash = fmt.Sprintf("%x", md5.Sum(rowdata))
 			}
 
 			data := bytes.Split(rowdata, []byte(" - "))
@@ -440,6 +448,7 @@ func NewMetadata(page pdf.Page) (*RaceMetadata, error) {
 	if err != nil {
 		return nil, err
 	}
+	r.RaceHash = string(racehash)
 	r.HorseType = string(horsetype)
 	r.Type = string(racetype)
 	r.Purse = string(purse)

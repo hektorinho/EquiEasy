@@ -7,6 +7,7 @@ import (
 
 const (
 	testFile = "data/eqbPDFChartPlus.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL102718USA.pdf"
 )
 
 func TestGetHorses(t *testing.T) {
