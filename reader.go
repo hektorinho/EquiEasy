@@ -15,17 +15,17 @@ import (
 const (
 	REGEX_VALID_RACE_PAGE   = `.*\- [A-Za-z]+ [0-9]+\, [0-9]{4} \- Race [0-9]+`
 	REGEX_VALID_CANCELLED   = `Cancelled.*\-.*`
-	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9AB]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\.\s\-\&\:\;\'\"\|]+)`
+	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9ABCX]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\.\s\-\&\:\;\'\"\|]+)`
 	REGEX_LAST_DATE_TRACK   = `(?P<date>[0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]*) (?P<track>[A-Z]{2}[A-Z]*)`
 	REGEX_FRACTIONALS       = `(Pg m Horse Name) (?P<fracs>Start .* Str Fin)`
 	REGEX_TOP_VALUES        = `([0-9\/\s])+|(Head)+[\s]+|(Nose)+[\s]+|(Neck)+[\s]+`
-	REGEX_HORSE_POSITIONAL  = `[0-9]{1}[0-9]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) [0-9]{1}[0-9]* [0-9]{1}[0-9]* [0-9]{1}[0-9]*.*`
-	REGEX_HORSE_TABLE_INIT  = `[0-9]{1}[0-9]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<start>[0-9]{1}[0-9]*) (?P<firstfrac>[0-9]{1}[0-9]*)`
+	REGEX_HORSE_POSITIONAL  = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) [0-9]{1}[0-9]* [0-9]{1}[0-9]* [0-9]{1}[0-9]*.*`
+	REGEX_HORSE_TABLE_INIT  = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<start>[0-9]{1}[0-9]*) (?P<firstfrac>[0-9]{1}[0-9]*)`
 	REGEX_TRAINERS          = `Trainers:(?P<trainers>.*)`
 	REGEX_TRAINERS_STOP     = `Owners:.*`
 	REGEX_OWNERS            = `Owners:(?P<owners>.*)`
 	REGEX_OWNERS_STOP       = `Footnotes.*`
-	REGEX_IND_TRAINER_OWNER = `(?P<number>[0-9]{1}[0-9]*)[\s]{1}\-[\s]*(?P<name>[A-Za-z0-9\,\.\s\'\-\(\)]+)`
+	REGEX_IND_TRAINER_OWNER = `(?P<number>[0-9]{1}[0-9abxABX]*)(?P<sep>(\s|\-)(\s|\-)(\s)*)(?P<name>[A-Za-z0-9\,\.\s\'\-\(\)]+)`
 
 	REGEX_RACE_TRACK                = `[ \*\[\]\/\\\\?\<\>]`
 	REGEX_RACE_NUMBER               = `Race (?P<number>[0-9]+)`
@@ -311,7 +311,7 @@ func (h *Horse) ApplyTrainerData(page pdf.Page) error {
 	trainers := bytes.Split(trainerdata, []byte(";"))
 	for _, tr := range trainers {
 		tr = bytes.Trim(tr, " ")
-		tnumb := retr.ReplaceAll(tr, []byte("$number"))
+		tnumb := bytes.ToUpper(retr.ReplaceAll(tr, []byte("$number")))
 		tname := retr.ReplaceAll(tr, []byte("$name"))
 
 		if h.Number == string(tnumb) {
@@ -358,7 +358,7 @@ func (h *Horse) ApplyOwnerData(page pdf.Page) error {
 	owners := bytes.Split(ownerdata, []byte(";"))
 	for _, or := range owners {
 		or = bytes.Trim(or, " ")
-		onumb := retr.ReplaceAll(or, []byte("$number"))
+		onumb := bytes.ToUpper(retr.ReplaceAll(or, []byte("$number")))
 		oname := retr.ReplaceAll(or, []byte("$name"))
 
 		if h.Number == string(onumb) {

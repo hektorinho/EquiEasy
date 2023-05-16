@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	testFile = "data/eqbPDFChartPlus.pdf"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL102718USA.pdf"
+	// testFile = "data/eqbPDFChartPlus.pdf"
+	testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
 )
 
 func TestGetHorses(t *testing.T) {
@@ -83,20 +83,20 @@ func TestApplyFractionals(t *testing.T) {
 	}
 
 	for i, page := range pages.Pages {
-		if i == 5 {
-			horses, err := GetHorses(page)
-			if err != nil {
-				t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		// if i == 5 {
+		horses, err := GetHorses(page)
+		if err != nil {
+			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		}
+		for _, horse := range horses {
+			if err := horse.ApplyFractionalData(page); err != nil {
+				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
 			}
-			for _, horse := range horses {
-				if err := horse.ApplyFractionalData(page); err != nil {
-					t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
-				}
-				if len(horse.Fractionals) < 1 {
-					t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
-				}
+			if len(horse.Fractionals) < 1 {
+				t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
 			}
 		}
+		// }
 	}
 }
 
@@ -107,23 +107,23 @@ func TestApplyTrainerData(t *testing.T) {
 	}
 
 	for i, page := range pages.Pages {
-		if i == 5 {
-			horses, err := GetHorses(page)
-			if err != nil {
-				t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		// if i == 5 {
+		horses, err := GetHorses(page)
+		if err != nil {
+			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		}
+		for _, horse := range horses {
+			if err := horse.ApplyFractionalData(page); err != nil {
+				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
 			}
-			for _, horse := range horses {
-				if err := horse.ApplyFractionalData(page); err != nil {
-					t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
-				}
-				if err := horse.ApplyTrainerData(page); err != nil {
-					t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
-				}
-				if len(horse.Trainer) < 1 {
-					t.Errorf("expected to have trainer data, got trainer=%s\n for horse=%s", horse.Trainer, horse.Name)
-				}
+			if err := horse.ApplyTrainerData(page); err != nil {
+				t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
+			}
+			if len(horse.Trainer) < 1 {
+				t.Errorf("expected to have trainer data, got trainer=%s\n for horse=%s", horse.Trainer, horse.Name)
 			}
 		}
+		// }
 	}
 }
 
@@ -134,23 +134,23 @@ func TestApplyOwnerData(t *testing.T) {
 	}
 
 	for i, page := range pages.Pages {
-		if i == 5 {
-			horses, err := GetHorses(page)
-			if err != nil {
-				t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		// if i == 5 {
+		horses, err := GetHorses(page)
+		if err != nil {
+			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
+		}
+		for _, horse := range horses {
+			if err := horse.ApplyFractionalData(page); err != nil {
+				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
 			}
-			for _, horse := range horses {
-				if err := horse.ApplyFractionalData(page); err != nil {
-					t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
-				}
-				if err := horse.ApplyOwnerData(page); err != nil {
-					t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
-				}
-				if len(horse.Owners) < 1 {
-					t.Errorf("expected to have owner data, got owner=%s\n from horse=%s", horse.Owners, horse.Name)
-				}
+			if err := horse.ApplyOwnerData(page); err != nil {
+				t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
+			}
+			if len(horse.Owners) < 1 {
+				t.Errorf("page %d | expected to have owner data, got owner=%s\n from horse=%s", i, horse.Owners, horse.Name)
 			}
 		}
+		// }
 	}
 }
 
