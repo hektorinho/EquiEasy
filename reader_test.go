@@ -15,7 +15,7 @@ func TestGetHorses(t *testing.T) {
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		if horses, err := GetHorses(page); err != nil {
 			if len(horses) > 3 {
 				t.Logf("Horse 1: %s, Horse 2: %s, Horse 3: %s\n", horses[0].Name, horses[1].Name, horses[2].Name)
@@ -36,7 +36,7 @@ func TestGetValidPages(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 	counter := 0
-	for _, page := range pages {
+	for _, page := range pages.Pages {
 		rows, err := page.GetTextByRow()
 		if err != nil {
 			t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
@@ -55,8 +55,8 @@ func TestGetValidPages(t *testing.T) {
 			}
 		}
 	}
-	if len(pages) != counter {
-		t.Errorf("wasnt able to get valid pages from %s\nGot len(pages)=%d, counted to %d valid pages\n", testFile, len(pages), counter)
+	if len(pages.Pages) != counter {
+		t.Errorf("wasnt able to get valid pages from %s\nGot len(pages)=%d, counted to %d valid pages\n", testFile, len(pages.Pages), counter)
 	}
 }
 
@@ -65,7 +65,7 @@ func TestFractionals(t *testing.T) {
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
-	for _, page := range pages {
+	for _, page := range pages.Pages {
 		fracs, _, err := Fractionals(page)
 		if err != nil {
 			t.Errorf("error >>> %s\n", err)
@@ -82,7 +82,7 @@ func TestApplyFractionals(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		if i == 5 {
 			horses, err := GetHorses(page)
 			if err != nil {
@@ -106,7 +106,7 @@ func TestApplyTrainerData(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		if i == 5 {
 			horses, err := GetHorses(page)
 			if err != nil {
@@ -133,7 +133,7 @@ func TestApplyOwnerData(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		if i == 5 {
 			horses, err := GetHorses(page)
 			if err != nil {
@@ -160,7 +160,7 @@ func TestTrackAndDate(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		race, err := NewMetadata(page)
 		if err != nil {
 			t.Errorf("wasn't able to gather track and date data from page %d\nerror >> %s\n", i+1, err)
@@ -183,7 +183,7 @@ func TestGenericDataFromRegex(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		// if i == 8 {
 		meta := RaceMetadata{}
 		if horsetype, err := meta.GenericDataFromRegex(page, REGEX_RACE_HORSETYPE); err != nil || horsetype == nil {
@@ -229,7 +229,7 @@ func TestNewRacePage(t *testing.T) {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
 
-	for i, page := range pages {
+	for i, page := range pages.Pages {
 		_, err := NewRacePage(page)
 		if err != nil {
 			t.Errorf("wasnt able to construct a race page from page=%d\nerror >>> %s\n", i+1, err)

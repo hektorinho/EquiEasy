@@ -91,6 +91,11 @@ type Fractional struct {
 	Position string
 }
 
+type ValidPages struct {
+	Filename string
+	Pages    []pdf.Page
+}
+
 // Get a list of all Horses racing on a race page.
 func GetHorses(page pdf.Page) ([]*Horse, error) {
 	horses := []*Horse{}
@@ -145,11 +150,11 @@ func GetHorses(page pdf.Page) ([]*Horse, error) {
 
 // BIG TODO: if race is cancelled it will still have a header but second row will say Cancelled due to Weather!!!
 // SEE BEL102718USA.pdf as and example!!!
-func GetValidPages(f string) ([]pdf.Page, error) {
+func GetValidPages(f string) (ValidPages, error) {
 	racepages := []pdf.Page{}
 	r, err := pdf.Open(f)
 	if err != nil {
-		return nil, err
+		return ValidPages{}, err
 	}
 
 	for i := 1; i <= r.NumPage(); i++ {
@@ -158,7 +163,7 @@ func GetValidPages(f string) ([]pdf.Page, error) {
 			racepages = append(racepages, page)
 		}
 	}
-	return racepages, nil
+	return ValidPages{Filename: f, Pages: racepages}, nil
 }
 
 // Returns a list of the positioned fractionals for a race.
