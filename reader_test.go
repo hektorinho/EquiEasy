@@ -3,18 +3,25 @@ package equieasy
 import (
 	"regexp"
 	"testing"
+
+	pdf "github.com/dslipak/pdf"
 )
 
 const (
-	// testFile = "data/eqbPDFChartPlus.pdf"
+	testFile = "data/eqbPDFChartPlus.pdf"
 
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
-	testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
 )
 
 func TestHorses(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -36,7 +43,11 @@ func TestHorses(t *testing.T) {
 
 func TestGetValidPages(t *testing.T) {
 	re := regexp.MustCompile(REGEX_VALID_RACE_PAGE)
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -66,7 +77,11 @@ func TestGetValidPages(t *testing.T) {
 }
 
 func TestFractionals(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -84,7 +99,11 @@ func TestFractionals(t *testing.T) {
 }
 
 func TestApplyFractionals(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -108,7 +127,11 @@ func TestApplyFractionals(t *testing.T) {
 }
 
 func TestApplyTrainerData(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -135,7 +158,11 @@ func TestApplyTrainerData(t *testing.T) {
 }
 
 func TestApplyOwnerData(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -162,7 +189,11 @@ func TestApplyOwnerData(t *testing.T) {
 }
 
 func TestTrackAndDate(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -187,7 +218,11 @@ func TestTrackAndDate(t *testing.T) {
 }
 
 func TestGenericDataFromRegex(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}
@@ -235,7 +270,11 @@ func TestGenericDataFromRegex(t *testing.T) {
 }
 
 func TestNewRacePage(t *testing.T) {
-	pages, err := GetValidPages(testFile)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		t.Errorf("err opening pdf >>> %s", err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		t.Errorf("wasnt able to get valid pages from %s\nerror >>> %s\n", testFile, err)
 	}

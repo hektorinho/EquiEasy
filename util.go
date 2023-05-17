@@ -1,6 +1,7 @@
 package equieasy
 
 import (
+	"fmt"
 	"math"
 	"regexp"
 
@@ -13,6 +14,7 @@ func isValidRacePage(page pdf.Page) bool {
 	reCancelled := regexp.MustCompile(REGEX_VALID_CANCELLED)
 	rows, err := page.GetTextByRow()
 	if err != nil {
+		fmt.Println("failed to receive rows back...")
 		return false
 	}
 
