@@ -15,7 +15,7 @@ import (
 const (
 	REGEX_VALID_RACE_PAGE   = `.*\- [A-Za-z]+ [0-9]+\, [0-9]{4} \- Race [0-9]+`
 	REGEX_VALID_CANCELLED   = `Cancelled.*\-.*`
-	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9ABCX]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\/\,\.\s\-\&\:\;\'\"\|]+)`
+	REGEX_GET_HORSES        = `(?P<datetrack>([\-]{3}\s+)|([0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]* [A-Z]{2}[A-Z]*))(?P<pgm>(\s)*[0-9ABCX]+) (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) \((?P<jockey>[A-Za-z0-9\,\.\s\'\-]+)\) (?P<wgt>[0-9]{3})( |.*)(?P<me>[A-Za-z\-\s]+) (?P<postposition>[0-9]{1}|[0-9]{2}) .* (?P<odds>[0-9]+\.[0-9\*]+) (?P<comment>[A-Za-z0-9\(\)\{\}\[\]\/\,\.\s\-\&\:\;\'\"\|]+)`
 	REGEX_LAST_DATE_TRACK   = `(?P<date>[0-9]{1}[0-9]*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[0-9]{1}[0-9]*) (?P<track>[A-Z]{2}[A-Z]*)`
 	REGEX_FRACTIONALS       = `(Pg m Horse Name) (?P<fracs>Start .* Str Fin)`
 	REGEX_TOP_VALUES        = `([0-9\/\s])+|(Head)+[\s]+|(Nose)+[\s]+|(Neck)+[\s]+`
@@ -25,7 +25,7 @@ const (
 	REGEX_TRAINERS_STOP     = `Owners:.*`
 	REGEX_OWNERS            = `Owners:(?P<owners>.*)`
 	REGEX_OWNERS_STOP       = `Footnotes.*`
-	REGEX_IND_TRAINER_OWNER = `(?P<number>[0-9]{1}[0-9abxABX]*)(?P<sep>(\s|\-)(\s|\-)(\s)*)(?P<name>[A-Za-z0-9\,\.\s\'\-\(\)]+)`
+	REGEX_IND_TRAINER_OWNER = `(?P<number>[0-9]{1}[0-9abxABX]*)(?P<sep>(\s|\-)(\s|\-)*(\s)*)(?P<name>[A-Za-z0-9\,\.\s\'\-\(\)]+)`
 
 	REGEX_RACE_TRACK                = `[ \*\[\]\/\\\\?\<\>]`
 	REGEX_RACE_NUMBER               = `Race (?P<number>[0-9]+)`
@@ -104,10 +104,10 @@ func GetHorses(page pdf.Page) ([]*Horse, error) {
 	racehash := ""
 
 	rows, err := page.GetTextByRow()
+	// fmt.Println(rows, " err >>>> ", err)
 	if err != nil {
 		return nil, err
 	}
-
 	for i, row := range rows {
 		rowdata := []byte{}
 		for _, word := range row.Content {
