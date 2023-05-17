@@ -24,7 +24,7 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	pages, err := GetValidPages(testFile, r)
+	p, err := GetValidPages(testFile, r)
 	if err != nil {
 		log.Panicln(err)
 	}
