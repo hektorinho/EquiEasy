@@ -30,8 +30,8 @@ const (
 
 	REGEX_RACE_TRACK                = `[ \*\[\]\/\\\\?\<\>]`
 	REGEX_RACE_NUMBER               = `Race (?P<number>[0-9]+)`
-	REGEX_RACE_HORSETYPE            = `(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES).* - (?P<value>[A-Za-z0-9]+)`
-	REGEX_RACE_RACETYPE             = `(?P<value>(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES).*) - ([A-Za-z0-9]+)`
+	REGEX_RACE_RACETYPE             = `(?P<value>(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES|HANDICAP).*) - ([A-Za-z0-9]+)`
+	REGEX_RACE_HORSETYPE            = `(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES|HANDICAP).* - (?P<value>[A-Za-z0-9]+)`
 	REGEX_RACE_PURSE                = `(Purse: )(?P<value>.*)`
 	REGEX_RACE_WEATHER              = `(Weather: )(?P<value>.*) Track: .*`
 	REGEX_RACE_TRACK_CONDITION      = `(Weather: )(.*) (Track: )(?P<value>.*)`
