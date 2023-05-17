@@ -8,7 +8,7 @@ import (
 )
 
 // Checks if page contains valid race data or is a continuation from previous race.
-func IsValidRacePage(page pdf.Page) bool {
+func isValidRacePage(page pdf.Page) bool {
 	re := regexp.MustCompile(REGEX_VALID_RACE_PAGE)
 	reCancelled := regexp.MustCompile(REGEX_VALID_CANCELLED)
 	rows, err := page.GetTextByRow()

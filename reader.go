@@ -108,7 +108,7 @@ func GetValidPages(f string) (ValidPages, error) {
 
 	for i := 1; i <= r.NumPage(); i++ {
 		page := r.Page(i)
-		if IsValidRacePage(page) {
+		if isValidRacePage(page) {
 			racepages = append(racepages, page)
 		}
 	}

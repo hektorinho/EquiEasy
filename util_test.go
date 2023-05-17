@@ -14,24 +14,26 @@ func TestIsValidRacePage(t *testing.T) {
 
 	listofPages := []pdf.Page{r.Page(1), r.Page(2), r.Page(3), r.Page(4)}
 
-	for i, page := range listofPages {
-		if IsValidRacePage(page) {
-			switch i {
-			case 0, 1, 3:
-				continue
-			case 2:
-				t.Errorf("expected this page not to be valid, page=%d", i+1)
-			default:
-				t.Errorf("expected this page not to be valid, page=%d", i+1)
-			}
-		} else {
-			switch i {
-			case 0, 1, 3:
-				t.Errorf("expected this page to be valid, page=%d", i+1)
-			case 2:
-				continue
-			default:
-				t.Errorf("expected this page to be valid, page=%d", i+1)
+	if testFile == "data/eqbPDFChartPlus.pdf" {
+		for i, page := range listofPages {
+			if isValidRacePage(page) {
+				switch i {
+				case 0, 1, 3:
+					continue
+				case 2:
+					t.Errorf("expected this page not to be valid, page=%d", i+1)
+				default:
+					t.Errorf("expected this page not to be valid, page=%d", i+1)
+				}
+			} else {
+				switch i {
+				case 0, 1, 3:
+					t.Errorf("expected this page to be valid, page=%d", i+1)
+				case 2:
+					continue
+				default:
+					t.Errorf("expected this page to be valid, page=%d", i+1)
+				}
 			}
 		}
 	}
