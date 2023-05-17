@@ -17,21 +17,21 @@ import (
 
 func main() {
     file := "data/eqbPDFChartPlus.pdf"
-	pages, err := GetValidPages(file)
+	p, err := GetValidPages(file)
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	for _, page := range pages {
+	for _, page := range p.Pages {
 		race, err := NewRacePage(page)
 		if err != nil {
 		    log.Panicln(err)
 		}
-	}
 
-    if err := DoSomethingWithData(race); err != nil {
-        log.Panicln(err)
-    }
+		if err := DoSomethingWithData(race); err != nil {
+			log.Panicln(err)
+		}
+	}
 }
 
 func DoSomethingWithData(race RacePage) error {
