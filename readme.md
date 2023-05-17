@@ -15,9 +15,16 @@ import (
     "github.com/hektorinho/equieasy"
 )
 
+const (
+	file = "data/eqbPDFChartPlus.pdf"
+)
+
 func main() {
-    file := "data/eqbPDFChartPlus.pdf"
-	p, err := GetValidPages(file)
+	r, err := pdf.Open(testFile)
+	if err != nil {
+		log.Panicln(err)
+	}
+	pages, err := GetValidPages(testFile, r)
 	if err != nil {
 		log.Panicln(err)
 	}
