@@ -233,7 +233,6 @@ func Horses(page pdf.Page) ([]*Horse, error) {
 	racehash := ""
 
 	rows, err := page.GetTextByRow()
-	// fmt.Println(rows, " err >>>> ", err)
 	if err != nil {
 		return nil, err
 	}
@@ -376,37 +375,40 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 		}
 	}
 
-	listoftop[0][0] = roundFloat(listoftop[1][0]-(listoftop[2][0]-listoftop[1][0]), 3)
+	var offset int
+	if len(listoftop) > 2 {
+		listoftop[0][0] = roundFloat(listoftop[1][0]-(listoftop[2][0]-listoftop[1][0]), 3)
+		offset = len(fractionals) - len(listoftop)
+		// fmt.Println(listoftop, len(frs))
 
-	offset := len(fractionals) - len(listoftop)
+		// TODO:
+		// When function in place, set default to 0.0
+		offset_from_word := 4.0
+		if h.withTopOffset {
+			offset_from_word = 4.0
+		}
 
-	// TODO:
-	// When function in place, set default to 0.0
-	offset_from_word := 4.0
-	if h.withTopOffset {
-		offset_from_word = 4.0
-	}
-
-	for i, item := range listoftop {
-		for _, row := range rows {
-			prevX := 0.0
-			for _, word := range row.Content {
-				if (word.X >= item[0]-offset_from_word) && (word.X <= item[0]+offset_from_word) && (word.Y == item[1]) {
-					if prevX == word.X {
-						fractionals[i+offset].Lengths += " " + word.S
+		for i, item := range listoftop {
+			for _, row := range rows {
+				prevX := 0.0
+				for _, word := range row.Content {
+					if (word.X >= item[0]-offset_from_word) && (word.X <= item[0]+offset_from_word) && (word.Y == item[1]) {
+						if prevX == word.X {
+							fractionals[i+offset].Lengths += " " + word.S
+						}
+						if prevX != word.X {
+							fractionals[i+offset].Lengths = word.S
+						}
 					}
-					if prevX != word.X {
-						fractionals[i+offset].Lengths = word.S
-					}
+					prevX = word.X
 				}
-				prevX = word.X
 			}
 		}
-	}
 
-	for i, fr := range frs {
-		fractionals[i].Distance = fr
-		h.Fractionals = append(h.Fractionals, fractionals[i])
+		for i, fr := range frs {
+			fractionals[i].Distance = fr
+			h.Fractionals = append(h.Fractionals, fractionals[i])
+		}
 	}
 	return nil
 }
@@ -443,6 +445,7 @@ func (h *Horse) applyTrainerData(page pdf.Page) error {
 			trainerdata = append(trainerdata, rowdata...)
 		}
 	}
+
 	trainerdata = re.ReplaceAll(trainerdata, []byte("$trainers"))
 	trainers := bytes.Split(trainerdata, []byte(";"))
 	for _, tr := range trainers {

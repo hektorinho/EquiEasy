@@ -11,10 +11,16 @@ const (
 	// testFile = "data/eqbPDFChartPlus.pdf"
 
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
-	testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062202USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062409USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
+	testFile = "C:/GoProjects/Scratch/Test/collected/BEL070806USA.pdf"
+
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
 )
 
 func TestHorses(t *testing.T) {
@@ -110,7 +116,8 @@ func TestApplyFractionals(t *testing.T) {
 	}
 
 	for i, page := range pages.Pages {
-		// if i == 3 {
+		// fmt.Println(i)
+		// if i == 5 {
 		horses, err := Horses(page)
 		if err != nil {
 			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
@@ -119,9 +126,10 @@ func TestApplyFractionals(t *testing.T) {
 			if err := horse.applyFractionalData(page); err != nil {
 				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
 			}
-			if len(horse.Fractionals) < 1 {
-				t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
-			}
+			// doesn't always come with full fractional data
+			// if len(horse.Fractionals) < 1 {
+			// 	t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
+			// }
 		}
 		// }
 	}
@@ -138,7 +146,7 @@ func TestApplyTrainerData(t *testing.T) {
 	}
 
 	for i, page := range pages.Pages {
-		// if i == 1 {
+		// if i == 2 {
 		horses, err := Horses(page)
 		if err != nil {
 			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
