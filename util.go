@@ -48,3 +48,22 @@ func roundFloat(val float64, precision uint) float64 {
 	ratio := math.Pow(10, float64(precision))
 	return math.Round(val*ratio) / ratio
 }
+
+func debug(val ...any) {
+	for _, v := range val {
+		switch v.(type) {
+		case []byte:
+			fmt.Printf("%s\n", v.([]byte))
+			return
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			fmt.Printf("%d", v.(int64))
+			return
+		case float32, float64:
+			fmt.Printf("%f", v.(float64))
+			return
+		default:
+			fmt.Printf("%s", v)
+			return
+		}
+	}
+}

@@ -13,9 +13,11 @@ const (
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062202USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062409USA.pdf"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
-	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
-	testFile = "C:/GoProjects/Scratch/Test/collected/BEL070806USA.pdf"
+	testFile = "C:/GoProjects/Scratch/Test/collected/BEL071807USA.pdf"
+
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
+// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070806USA.pdf" // race 3 only 2 horses no betting...
 
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
