@@ -8,12 +8,13 @@ import (
 )
 
 const (
-	testFile = "data/eqbPDFChartPlus.pdf"
+	// testFile = "data/eqbPDFChartPlus.pdf"
 
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
+	testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
 )
 
 func TestHorses(t *testing.T) {
@@ -254,9 +255,11 @@ func TestGenericDataFromRegex(t *testing.T) {
 		if finaltime, err := meta.genericDataFromRegex(page, REGEX_RACE_FINAL_TIME); err != nil || finaltime == nil {
 			t.Errorf("wasn't able to gather RACE_FINAL_TIME data from page %d, %s\nerror >> %s", i+1, finaltime, err)
 		}
-		if fractionaltimes, err := meta.genericDataFromRegex(page, REGEX_RACE_FRACTIONAL_TIMES); err != nil || fractionaltimes == nil {
-			t.Errorf("wasn't able to gather FRACTIONAL_TIMES data from page %d, %s\nerror >> %s", i+1, fractionaltimes, err)
-		}
+
+		// Fractional times can sometimes be omitted...
+		// if fractionaltimes, err := meta.genericDataFromRegex(page, REGEX_RACE_FRACTIONAL_TIMES); err != nil || fractionaltimes == nil {
+		// 	t.Errorf("wasn't able to gather FRACTIONAL_TIMES data from page %d, %s\nerror >> %s", i+1, fractionaltimes, err)
+		// }
 
 		// Split times can sometimes be nil if clock malfunction during race ...
 		// if splittimes, err := meta.genericDataFromRegex(page, REGEX_RACE_SPLIT_TIMES); err != nil || splittimes == nil {

@@ -35,7 +35,7 @@ const (
 	REGEX_RACE_PURSE                = `(Purse: )(?P<value>.*)`
 	REGEX_RACE_WEATHER              = `(Weather: )(?P<value>.*) Track: .*`
 	REGEX_RACE_TRACK_CONDITION      = `(Weather: )(.*) (Track: )(?P<value>.*)`
-	REGEX_RACE_LENGTH               = `(?P<value>.* (On The Inner turf|On The Outer turf|On The Dirt|On The Turf|On The Downhill turf|On The Downhill Turf))(.*)`
+	REGEX_RACE_LENGTH               = `(?P<value>.* (On The Hurdle|On The Inner turf|On The Outer turf|On The Dirt|On The Turf|On The Downhill turf|On The Downhill Turf))(.*)`
 	REGEX_RACE_CURRENT_TRACK_RECORD = `.*(Current Track Record:|Track Record:) (?P<value>.*)`
 	REGEX_RACE_FINAL_TIME           = `.*Final Time: (?P<value>.*)`
 	REGEX_RACE_FRACTIONAL_TIMES     = `Fractional Times: (?P<value>.*) Final Time:.*`
@@ -209,6 +209,7 @@ func Metadata(page pdf.Page) (*RaceMetadata, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	r.RaceHash = string(racehash)
 	r.HorseType = string(horsetype)
 	r.Type = string(racetype)
@@ -524,7 +525,7 @@ func (r *RaceMetadata) genericDataFromRegex(page pdf.Page, regex string) ([]byte
 			return data, nil
 		}
 	}
-	if regex == REGEX_RACE_SPLIT_TIMES {
+	if (regex == REGEX_RACE_SPLIT_TIMES) || (regex == REGEX_RACE_FRACTIONAL_TIMES) {
 		return nil, nil
 	}
 	return nil, fmt.Errorf("wasn't able to grab the generic data requested\nregex >> %s", regex)
