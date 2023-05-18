@@ -20,11 +20,11 @@ const (
 )
 
 func main() {
-	r, err := pdf.Open(testFile)
+	r, err := pdf.Open(file)
 	if err != nil {
 		log.Panicln(err)
 	}
-	p, err := GetValidPages(testFile, r)
+	p, err := GetValidPages(file, r)
 	if err != nil {
 		log.Panicln(err)
 	}
