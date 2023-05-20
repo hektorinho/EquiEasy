@@ -35,7 +35,7 @@ const (
 	REGEX_RACE_PURSE                = `(Purse: )(?P<value>.*)`
 	REGEX_RACE_WEATHER              = `(Weather: )(?P<value>.*) Track: .*`
 	REGEX_RACE_TRACK_CONDITION      = `(Weather: )(.*) (Track: )(?P<value>.*)`
-	REGEX_RACE_LENGTH               = `(?P<value>.* (On The Hurdle|On The Inner turf|On The Outer turf|On The Dirt|On The Turf|On The Downhill turf|On The Downhill Turf))(.*)`
+	REGEX_RACE_LENGTH               = `(?P<value>.* (On The Inner track|On The Hurdle|On The Inner turf|On The Outer turf|On The Dirt|On The Turf|On The Downhill turf|On The Downhill Turf))(.*)`
 	REGEX_RACE_CURRENT_TRACK_RECORD = `.*(Current Track Record:|Track Record:) (?P<value>.*)`
 	REGEX_RACE_FINAL_TIME           = `.*Final Time: (?P<value>.*)`
 	REGEX_RACE_FRACTIONAL_TIMES     = `Fractional Times: (?P<value>.*) Final Time:.*`
@@ -52,6 +52,7 @@ type RacePage struct {
 }
 
 type RaceMetadata struct {
+	FileName           string
 	RaceHash           string
 	Track              string
 	Type               string
@@ -84,6 +85,7 @@ type Horse struct {
 	LastRaced     time.Time
 	LastTrack     string
 	Fractionals   []Fractional
+	Disqualified  bool
 	withTopOffset bool
 }
 
@@ -120,6 +122,13 @@ func NewRacePage(page pdf.Page) (*RacePage, error) {
 	horses, err := Horses(page)
 	if err != nil {
 		return nil, err
+	}
+	for _, horse := range horses {
+		horse.applyFractionalData(page)
+		horse.applyTrainerData(page)
+		horse.applyOwnerData(page)
+
+		// fmt.Println(horse.Name, " >>> ", horse.Fractionals)
 	}
 	return &RacePage{Metadata: meta, Horses: horses}, nil
 }
@@ -331,7 +340,10 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			}
 
 			var horseString string
-			if len(h.Name) > 7 {
+			if h.Name[:3] == "DQ-" {
+				h.Name = h.Name[3:]
+				h.Disqualified = true
+			} else if len(h.Name) > 7 {
 				horseString = fmt.Sprintf("%s %s", h.Number, h.Name[:5])
 			} else {
 				horseString = fmt.Sprintf("%s %s", h.Number, h.Name)
@@ -348,18 +360,57 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 								firstfrac := Fractional{Position: strings.Trim(string(re.ReplaceAll(val, []byte("$firstfrac"))), " ")}
 								fractionals = append(fractionals, start, firstfrac)
 							} else {
-								frac := Fractional{Position: strings.Trim(string(val), " ")}
-								fractionals = append(fractionals, frac)
+								if ok, cnt := containsCount("---", strings.Trim(string(val), " "), " "); ok {
+									switch cnt {
+									case 0:
+									case 1:
+										fractionals = append(fractionals, Fractional{Position: "0"})
+									case 2:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 3:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 4:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 5:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 6:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									default:
+										continue
+									}
+								} else {
+									frac := Fractional{Position: strings.Trim(string(val), " ")}
+									fractionals = append(fractionals, frac)
+								}
 							}
 						default:
 							if re2.Match(val) {
 								firstfrac := Fractional{Position: strings.Trim(string(re.ReplaceAll(val, []byte("$firstfrac"))), " ")}
 								fractionals = append(fractionals, firstfrac)
 							} else {
-								frac := Fractional{Position: strings.Trim(string(val), " ")}
-								fractionals = append(fractionals, frac)
+								if ok, cnt := containsCount("---", strings.Trim(string(val), " "), " "); ok {
+									switch cnt {
+									case 0:
+									case 1:
+										fractionals = append(fractionals, Fractional{Position: "0"})
+									case 2:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 3:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 4:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 5:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									case 6:
+										fractionals = append(fractionals, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"}, Fractional{Position: "0"})
+									default:
+										continue
+									}
+								} else {
+									frac := Fractional{Position: strings.Trim(string(val), " ")}
+									fractionals = append(fractionals, frac)
+								}
 							}
-
 						}
 					}
 
@@ -374,15 +425,13 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			}
 		}
 	}
+	// fmt.Println(h.Name, h.Fractionals)
 
 	var offset int
 	if len(listoftop) > 2 {
 		listoftop[0][0] = roundFloat(listoftop[1][0]-(listoftop[2][0]-listoftop[1][0]), 3)
 		offset = len(fractionals) - len(listoftop)
-		// fmt.Println(listoftop, len(frs))
 
-		// TODO:
-		// When function in place, set default to 0.0
 		offset_from_word := 4.0
 		if h.withTopOffset {
 			offset_from_word = 4.0
@@ -410,6 +459,8 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			h.Fractionals = append(h.Fractionals, fractionals[i])
 		}
 	}
+	// fmt.Println(h.Name, "dist >>", h.Fractionals[1].Distance, "len >>", h.Fractionals[1].Lengths, "pos >>", h.Fractionals[1].Position)
+	// fmt.Println(h.Name, fractionals)
 	return nil
 }
 

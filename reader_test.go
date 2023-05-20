@@ -13,7 +13,15 @@ const (
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL050910USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062202USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL062409USA.pdf"
-	testFile = "C:/GoProjects/Scratch/Test/collected/BEL071807USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL071807USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL072094USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL092996USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL101812USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL102012USA.pdf"
+	testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010117USA.pdf"
+
+	//
+	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU011608USA.pdf"
 
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
@@ -24,6 +32,14 @@ const (
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
 // testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
 )
+
+// func TestContaintsCount(t *testing.T) {
+// 	test := []byte("--- ---")
+// 	c := "---"
+// 	if ok, cnt := containsCount(c, test, " "); ok {
+// 		t.Error("list if ok", cnt)
+// 	}
+// }
 
 func TestHorses(t *testing.T) {
 	r, err := pdf.Open(testFile)

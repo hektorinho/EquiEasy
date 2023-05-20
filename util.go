@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"regexp"
+	"strings"
 
 	pdf "github.com/dslipak/pdf"
 )
@@ -66,4 +67,27 @@ func debug(val ...any) {
 			return
 		}
 	}
+}
+
+func contains(tgt string, src []byte) bool {
+	for i := 0; i < len(src); i++ {
+		if i+len(tgt) <= len(src) {
+			if tgt == string(src[i:i+len(tgt)]) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func containsCount(tgt string, src string, sep string) (bool, int) {
+	for i := 0; i < len(src); i++ {
+		if i+len(tgt) <= len(src) {
+			if tgt == string(src[i:i+len(tgt)]) {
+				b := strings.Split(src, sep)
+				return true, len(b)
+			}
+		}
+	}
+	return false, 0
 }
