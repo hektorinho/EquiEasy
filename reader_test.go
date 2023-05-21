@@ -18,28 +18,21 @@ const (
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL092996USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL101812USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL102012USA.pdf"
-	testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010117USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010115USA.pdf"
+	testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU013191USA.pdf"
 
 	//
 	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU011608USA.pdf"
 
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070806USA.pdf" // race 3 only 2 horses no betting...
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL063022USA.pdf2"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070317USA.pdf2"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL070806USA.pdf" // race 3 only 2 horses no betting...
 
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
-// testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051001USA2.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051118USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
+	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
 )
-
-// func TestContaintsCount(t *testing.T) {
-// 	test := []byte("--- ---")
-// 	c := "---"
-// 	if ok, cnt := containsCount(c, test, " "); ok {
-// 		t.Error("list if ok", cnt)
-// 	}
-// }
 
 func TestHorses(t *testing.T) {
 	r, err := pdf.Open(testFile)
@@ -266,9 +259,10 @@ func TestGenericDataFromRegex(t *testing.T) {
 		if purse, err := meta.genericDataFromRegex(page, REGEX_RACE_PURSE); err != nil || purse == nil {
 			t.Errorf("wasn't able to gather PURSE data from page %d, %s\nerror >> %s", i+1, purse, err)
 		}
-		if weather, err := meta.genericDataFromRegex(page, REGEX_RACE_WEATHER); err != nil || weather == nil {
-			t.Errorf("wasn't able to gather WEATHER data from page %d, %s\nerror >> %s", i+1, weather, err)
-		}
+		///  Weather data not always included
+		// if weather, err := meta.genericDataFromRegex(page, REGEX_RACE_WEATHER); err != nil || weather == nil {
+		// 	t.Errorf("wasn't able to gather WEATHER data from page %d, %s\nerror >> %s", i+1, weather, err)
+		// }
 		if trackcondition, err := meta.genericDataFromRegex(page, REGEX_RACE_TRACK_CONDITION); err != nil || trackcondition == nil {
 			t.Errorf("wasn't able to gather TRACK_CONDITION data from page %d, %s\nerror >> %s", i+1, trackcondition, err)
 		}

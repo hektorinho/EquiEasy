@@ -32,9 +32,9 @@ const (
 	REGEX_RACE_NUMBER               = `Race (?P<number>[0-9]+)`
 	REGEX_RACE_RACETYPE             = `(?P<value>(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES|HANDICAP).*) - ([A-Za-z0-9]+)`
 	REGEX_RACE_HORSETYPE            = `(MAIDEN|CLAIMING|STARTER|ALLOWANCE|STAKES|HANDICAP).* - (?P<value>[A-Za-z0-9]+)`
-	REGEX_RACE_PURSE                = `(Purse: )(?P<value>.*)`
-	REGEX_RACE_WEATHER              = `(Weather: )(?P<value>.*) Track: .*`
-	REGEX_RACE_TRACK_CONDITION      = `(Weather: )(.*) (Track: )(?P<value>.*)`
+	REGEX_RACE_PURSE                = `(Purse:)(?P<value>.*)`
+	REGEX_RACE_WEATHER              = `(Weather:)(?P<value>.*) Track: .*`
+	REGEX_RACE_TRACK_CONDITION      = `(Weather:)(.*) (Track: )(?P<value>.*)`
 	REGEX_RACE_LENGTH               = `(?P<value>.* (On The Inner track|On The Hurdle|On The Inner turf|On The Outer turf|On The Dirt|On The Turf|On The Downhill turf|On The Downhill Turf))(.*)`
 	REGEX_RACE_CURRENT_TRACK_RECORD = `.*(Current Track Record:|Track Record:) (?P<value>.*)`
 	REGEX_RACE_FINAL_TIME           = `.*Final Time: (?P<value>.*)`
