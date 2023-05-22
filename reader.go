@@ -20,8 +20,8 @@ const (
 	REGEX_FRACTIONALS          = `(Pg m Horse Name) (?P<fracs>(Start|1\/4|3\/8|1\/2) .* Str Fin)`
 	REGEX_TOP_VALUES           = `([0-9\/\s])+|(Head)+[\s]+|(Nose)+[\s]+|(Neck)+[\s]+`
 	REGEX_HORSE_POSITIONAL     = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) [0-9]{1}[0-9]* [0-9]{1}[0-9]* [0-9]{1}[0-9]*.*`
-	REGEX_HORSE_TABLE_W_START  = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<start>[0-9]{1}[0-9]*) (?P<firstfrac>[0-9]{1}[0-9]*)`
-	REGEX_HORSE_TABLE_WO_START = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<firstfrac>[0-9]{1}[0-9]*)`
+	REGEX_HORSE_TABLE_W_START  = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<start>[0-9]{1}[0-9]*) (?P<firstfrac>[0-9\*]{1}[0-9]*)`
+	REGEX_HORSE_TABLE_WO_START = `[0-9]{1}[0-9ABX]* (?P<horsename>[A-Za-z0-9\s\'\"\!\.\,\-\_\*\$\?]+[A-Z\(\)\w]*) (?P<firstfrac>[0-9\*]{1}[0-9]*)`
 	REGEX_TRAINERS             = `Trainers:(?P<trainers>.*)`
 	REGEX_TRAINERS_STOP        = `Owners:.*`
 	REGEX_OWNERS               = `Owners:(?P<owners>.*)`
@@ -340,18 +340,24 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			}
 
 			var horseString string
-			if h.Name[:3] == "DQ-" {
-				h.Name = h.Name[3:]
-				h.Disqualified = true
-			} else if len(h.Name) > 7 {
+			if len(h.Name) > 3 {
+				if h.Name[:3] == "DQ-" {
+					h.Name = h.Name[3:]
+					h.Disqualified = true
+				}
+			}
+
+			if len(h.Name) > 7 {
 				horseString = fmt.Sprintf("%s %s", h.Number, h.Name[:5])
 			} else {
 				horseString = fmt.Sprintf("%s %s", h.Number, h.Name)
 			}
+			// debug(rowdata)
 
 			if len(rowdata) >= len(horseString) {
 				if horseString == string(rowdata[:len(horseString)]) {
 					values := bytes.Split(rowdata, []byte(" | "))
+					// debug(values)
 					for _, val := range values {
 						switch frs[0] {
 						case "Start":
@@ -360,7 +366,7 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 								firstfrac := Fractional{Position: strings.Trim(string(re.ReplaceAll(val, []byte("$firstfrac"))), " ")}
 								fractionals = append(fractionals, start, firstfrac)
 							} else {
-								if ok, cnt := containsCount("---", strings.Trim(string(val), " "), " "); ok {
+								if ok, cnt := containsCount([]string{"---"}, strings.Trim(string(val), " "), " "); ok {
 									switch cnt {
 									case 0:
 									case 1:
@@ -388,7 +394,7 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 								firstfrac := Fractional{Position: strings.Trim(string(re.ReplaceAll(val, []byte("$firstfrac"))), " ")}
 								fractionals = append(fractionals, firstfrac)
 							} else {
-								if ok, cnt := containsCount("---", strings.Trim(string(val), " "), " "); ok {
+								if ok, cnt := containsCount([]string{"---"}, strings.Trim(string(val), " "), " "); ok {
 									switch cnt {
 									case 0:
 									case 1:
@@ -425,7 +431,9 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			}
 		}
 	}
-	// fmt.Println(h.Name, h.Fractionals)
+	if len(frs)-len(fractionals) > 1 {
+		return fmt.Errorf("failed to gather fractional data")
+	}
 
 	var offset int
 	if len(listoftop) > 2 {
@@ -459,8 +467,6 @@ func (h *Horse) applyFractionalData(page pdf.Page) error {
 			h.Fractionals = append(h.Fractionals, fractionals[i])
 		}
 	}
-	// fmt.Println(h.Name, "dist >>", h.Fractionals[1].Distance, "len >>", h.Fractionals[1].Lengths, "pos >>", h.Fractionals[1].Position)
-	// fmt.Println(h.Name, fractionals)
 	return nil
 }
 

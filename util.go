@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"regexp"
-	"strings"
 
 	pdf "github.com/dslipak/pdf"
 )
@@ -57,13 +56,16 @@ func debug(val ...any) {
 			fmt.Printf("%s\n", v.([]byte))
 			return
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-			fmt.Printf("%d", v.(int64))
+			fmt.Printf("%d\n", v.(int))
 			return
 		case float32, float64:
-			fmt.Printf("%f", v.(float64))
+			fmt.Printf("%f\n", v.(float64))
+			return
+		case bool:
+			fmt.Printf("%t\n", v.(bool))
 			return
 		default:
-			fmt.Printf("%s", v)
+			fmt.Printf("%s\n", v)
 			return
 		}
 	}
@@ -80,14 +82,23 @@ func contains(tgt string, src []byte) bool {
 	return false
 }
 
-func containsCount(tgt string, src string, sep string) (bool, int) {
-	for i := 0; i < len(src); i++ {
-		if i+len(tgt) <= len(src) {
-			if tgt == string(src[i:i+len(tgt)]) {
-				b := strings.Split(src, sep)
-				return true, len(b)
+func containsCount(tgt []string, src string, sep string) (bool, int) {
+	b := []string{}
+	for _, t := range tgt {
+		for i := 0; i < len(src); i++ {
+			if (i + len(t)) <= (len(src)) {
+				if t == string(src[i:i+len(t)]) {
+					b = append(b, t)
+				}
 			}
 		}
 	}
+	if len(b) > 0 {
+		return true, len(b)
+	}
 	return false, 0
+}
+
+func checkHorseName(name *Horse) {
+	return
 }

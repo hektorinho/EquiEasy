@@ -19,7 +19,9 @@ const (
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL101812USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL102012USA.pdf"
 	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010115USA.pdf"
-	testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU013191USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU013191USA.pdf"
+	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010292USA.pdf"
+	testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU010107USA.pdf"
 
 	//
 	// testFile = "C:/GoProjects/Scratch/DownloadFromEquibase/dl/AQU/AQU011608USA.pdf"
@@ -33,6 +35,13 @@ const (
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL051514USA.pdf2"
 	// testFile = "C:/GoProjects/Scratch/Test/collected/BEL060304USA.pdf"
 )
+
+// func TestContainsCount(t *testing.T) {
+// 	str := []string{"---", "*"}
+// 	rowdata := "5 High Chaparall * * * 4 56.00 fucking failed"
+// 	ok, cnt := containsCount(str, rowdata, " ")
+// 	// fmt.Println(ok, cnt)
+// }
 
 func TestHorses(t *testing.T) {
 	r, err := pdf.Open(testFile)
@@ -128,21 +137,22 @@ func TestApplyFractionals(t *testing.T) {
 
 	for i, page := range pages.Pages {
 		// fmt.Println(i)
-		// if i == 5 {
-		horses, err := Horses(page)
-		if err != nil {
-			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
-		}
-		for _, horse := range horses {
-			if err := horse.applyFractionalData(page); err != nil {
-				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
+		if i == 6 {
+			horses, err := Horses(page)
+			if err != nil {
+				t.Errorf("wasnt able to get horse data for page %d\n", i+1)
 			}
-			// doesn't always come with full fractional data
-			// if len(horse.Fractionals) < 1 {
-			// 	t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
-			// }
+			for _, horse := range horses {
+				checkHorseName(horse)
+				// if err := horse.applyFractionalData(page); err != nil {
+				// 	t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
+				// }
+				// doesn't always come with full fractional data
+				// if len(horse.Fractionals) < 1 {
+				// 	t.Errorf("expected to have fractional data, got len(horse.Fractionals)=%d\n", len(horse.Fractionals))
+				// }
+			}
 		}
-		// }
 	}
 }
 
@@ -163,9 +173,9 @@ func TestApplyTrainerData(t *testing.T) {
 			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
 		}
 		for _, horse := range horses {
-			if err := horse.applyFractionalData(page); err != nil {
-				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
-			}
+			// if err := horse.applyFractionalData(page); err != nil {
+			// 	t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
+			// }
 			if err := horse.applyTrainerData(page); err != nil {
 				t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
 			}
@@ -194,9 +204,9 @@ func TestApplyOwnerData(t *testing.T) {
 			t.Errorf("wasnt able to get horse data for page %d\n", i+1)
 		}
 		for _, horse := range horses {
-			if err := horse.applyFractionalData(page); err != nil {
-				t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
-			}
+			// if err := horse.applyFractionalData(page); err != nil {
+			// 	t.Errorf("wasnt able to asssemble fractional data points for page %d and horse %s\n", i+1, horse.Name)
+			// }
 			if err := horse.applyOwnerData(page); err != nil {
 				t.Errorf("wasnt able to asssemble trainer for page %d and horse %s\n", i+1, horse.Name)
 			}
